@@ -2,7 +2,8 @@
 // #DWGO 2014-12-10 at KABUKIZA TOWER
 //
 // SPECIAL THANKS TO:
-//	yukkurisinai (https://github.com/yukkurisinai)
+//	- yukkurisinai (https://github.com/yukkurisinai)
+//	- all the others in #DWGO
 //
 
 package main
