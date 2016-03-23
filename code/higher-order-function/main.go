@@ -7,8 +7,7 @@ package main
 import "fmt"
 
 func handler(arg string) {
-	fmt.Print("handler: ")
-	fmt.Println(arg)
+	fmt.Printf("handler: [%s]", arg)
 }
 
 // run() は“高階関数”(=higher-order function)である
