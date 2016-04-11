@@ -3,28 +3,33 @@ package main
 import "os"
 import "fmt"
 import "io/ioutil"
+import "path"
 
-func is_directory(path string) (bool) {
+func _is_directory(path_string string) (bool) {
 
-	f, _ := os.Stat(path)
+	if path_string == "" {
+		return false
+	}
+	f, _ := os.Stat(path_string)
 	return f.IsDir()
 }
 
-func enumerate_files(path string) {
+func _enumerate_files(path_string string) {
 
-	if is_directory(path) {
-		files, _ := ioutil.ReadDir(path)
+	if _is_directory(path_string) {
+		// fmt.Println(path_string)
+		files, _ := ioutil.ReadDir(path_string)
 		for _, f := range files {
-			enumerate_files(path + "\\" + f.Name())
+			_enumerate_files(path.Join(path_string, f.Name()))
 		}
 	} else {
-		fmt.Println("DETECTED: " + path)
+		fmt.Println(path_string)
 	}
 }
 
 func main() {
 
-	for _, path := range os.Args[1:] {
-		enumerate_files(path)
+	for _, path_string := range os.Args[1:] {
+		_enumerate_files(path_string)
 	}
 }
