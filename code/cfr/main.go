@@ -1,23 +1,17 @@
 package main
 
 import "os"
-// import "fmt"
 import "io/ioutil"
 import "path"
 import "log"
 import "strings"
 import "os/exec"
 import "bytes"
-// import "io"
 
-// func _save(p string, content string) {
-
-// }
-
-func _decompile(path_string string) {
+func decompile(path_string string) (int) {
 
 	if !strings.HasSuffix(path_string, ".class") {
-		return
+		return 0
 	}
 
 	command := exec.Command(
@@ -27,26 +21,24 @@ func _decompile(path_string string) {
 	error := command.Run()
 	if error != nil {
 		log.Fatal(error)
-		return
+		return 0
 	}
 
 	stream, error := os.Create(path_string + ".java")
 	if error != nil {
 		log.Fatal(error)
-		return
+		return 0
 	}
 	defer stream.Close()
 	length, error := stream.Write(buffer.Bytes())
 	if error != nil {
 		log.Fatal(error)
-		return
+		return 0
 	}
-	if length == 0 {
-
-	}
+	return length
 }
 
-func _is_directory(path_string string) (bool) {
+func isDirectory(path_string string) (bool) {
 
 	if path_string == "" {
 		return false
@@ -55,21 +47,21 @@ func _is_directory(path_string string) (bool) {
 	return f.IsDir()
 }
 
-func _enumerate_files(path_string string) {
+func enumerateFiles(path_string string) {
 
-	if _is_directory(path_string) {
+	if isDirectory(path_string) {
 		files, _ := ioutil.ReadDir(path_string)
 		for _, f := range files {
-			_enumerate_files(path.Join(path_string, f.Name()))
+			enumerateFiles(path.Join(path_string, f.Name()))
 		}
 	} else {
-		_decompile(path_string)
+		decompile(path_string)
 	}
 }
 
 func main() {
 
 	for _, path_string := range os.Args[1:] {
-		_enumerate_files(path_string)
+		enumerateFiles(path_string)
 	}
 }
