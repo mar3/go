@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -9,18 +10,29 @@ import (
  
 func main() {
 
+	if false {
+		os.Setenv("HTTP_PROXY", "http://proxy.company.co.jp")
+	}
+
+	conf := &tls.Config{
+		// InsecureSkipVerify: false,
+		// ServerName: "google.co.jp",
+	}
+
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: false,
-		},
+		TLSClientConfig: conf,
+		// Proxy: http.ProxyFromEnvironment,
 	}
 
 	client := &http.Client{
 		Transport: tr,
 	}
 
-	url := "https://www.google.co.jp"
-	response, err := client.Get(url)
+	url := "https://www.google.co.jp/search?q=datadog"
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("Accept-Charset", "utf-8")
+	req.Header.Add("User-Agent", "Mozilla/5.0")
+	response, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
 		return
