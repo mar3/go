@@ -7,12 +7,14 @@ import (
 	"net/http"
 	"crypto/tls"
 )
- 
-func main() {
 
-	if false {
-		os.Setenv("HTTP_PROXY", "http://proxy.company.co.jp")
-	}
+func getNormalClient() (*http.Client) {
+
+	client := &http.Client{}
+	return client
+}
+
+func getTlsClient() (*http.Client) {
 
 	conf := &tls.Config{
 		// InsecureSkipVerify: false,
@@ -27,6 +29,18 @@ func main() {
 	client := &http.Client{
 		Transport: tr,
 	}
+
+	return client
+}
+
+func main() {
+
+	if false {
+		os.Setenv("HTTP_PROXY", "http://proxy.company.co.jp")
+	}
+
+	// client := getNormalClient()
+	client := getTlsClient()
 
 	url := "https://www.google.co.jp/search?q=datadog"
 	req, _ := http.NewRequest("GET", url, nil)
