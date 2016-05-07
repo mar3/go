@@ -5,22 +5,17 @@ import "fmt"
 import "io/ioutil"
 import "path"
 
-func _is_directory(path_string string) (bool) {
+func enumerateFiles(path_string string) {
 
 	if path_string == "" {
-		return false
+		return
 	}
+
 	f, _ := os.Stat(path_string)
-	return f.IsDir()
-}
-
-func _enumerate_files(path_string string) {
-
-	if _is_directory(path_string) {
-		// fmt.Println(path_string)
+	if f.IsDir() {
 		files, _ := ioutil.ReadDir(path_string)
 		for _, f := range files {
-			_enumerate_files(path.Join(path_string, f.Name()))
+			enumerateFiles(path.Join(path_string, f.Name()))
 		}
 	} else {
 		fmt.Println(path_string)
@@ -30,6 +25,6 @@ func _enumerate_files(path_string string) {
 func main() {
 
 	for _, path_string := range os.Args[1:] {
-		_enumerate_files(path_string)
+		enumerateFiles(path_string)
 	}
 }
