@@ -1,20 +1,16 @@
-//
-// 高階関数
-//
-
 package main
 
 import "fmt"
 
 func handler(arg string) {
-	fmt.Printf("handler: [%s]", arg)
+	fmt.Printf("handler: [%s]\n", arg)
 }
 
-// run() は“高階関数”(=higher-order function)である
-func run(f func(string), arg string) {
+// 高階関数
+func invoke(f func(string), arg string) {
 	f(arg)
 }
 
 func main() {
-	run(handler, "Hello")
+	invoke(handler, "Hello")
 }
