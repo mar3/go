@@ -2,6 +2,18 @@ package main
 
 import "fmt"
 
+func キーの有無を調べる() {
+
+	m := make(map[string]string)
+
+	m["0"] = "Zero"
+	m["1"] = "One"
+
+	fmt.Println(m["1"])
+	_, test := m["2"]
+	fmt.Println(test)
+}
+
 func main() {
 
 	// キーが string、値は任意の型を許容するマップ
