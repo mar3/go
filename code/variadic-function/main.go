@@ -1,43 +1,36 @@
 package main
 
 import "fmt"
+import "reflect"
 
-//
-// string のみ
-//
-func println_01(args ...string) {
+func print_string_values(args ...string) {
 
 	for _, e := range(args) {
-		fmt.Print(e)
+		fmt.Printf("[%v]", e)
 	}
 	fmt.Println()
 }
 
-//
-// int のみ
-//
-func println_02(args ...int) {
+func print_float_values(args ...float64) {
 
 	for _, e := range(args) {
-		fmt.Print(e)
+		fmt.Printf("[%v]", e)
 	}
 	fmt.Println()
 }
 
-//
-// 様々な型
-//
-func println_03(args ...interface{}) {
+func print_various_values(args ...interface{}) {
 
 	for _, e := range(args) {
-		fmt.Print(e)
+		value := reflect.ValueOf(e)
+		fmt.Printf("[%v]", value)
 	}
 	fmt.Println()
 }
 
 func main() {
 	
-	println_01("Hello", " ", "World!")
-	println_02(1, 2, 3, 4, 5)
-	println_03("Hello", " ", 999, " ", 1.1111, " ", "World!")
+	print_string_values("Hello", " ", "World!")
+	print_float_values(-982.901, 1, 2, 3, 3.0, 21245, 0.00081)
+	print_various_values("Hello", " ", 999, " ", 1.1111, " ", "World!", nil)
 }
