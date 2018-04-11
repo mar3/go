@@ -5,7 +5,6 @@ import "io"
 import "io/ioutil"
 import "log"
 import "os"
-// import "bufio"
 import "golang.org/x/crypto/ssh"
 
 
@@ -123,6 +122,7 @@ func _hello3() {
 	// 	log.Fatalf("failed to start shell: %s", err)
 	// }
 	// if err := session.Run()
+	fmt.Println("Ok.")
 }
 
 func main() {
