@@ -12,6 +12,7 @@ func main() {
 		fmt.Println("[ERROR]", err)
 		return
 	}
+	defer file.Close()
 	reader := csv.NewReader(file)
 	reader.Comma = ','
 	for {
