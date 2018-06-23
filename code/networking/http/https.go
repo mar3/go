@@ -28,6 +28,7 @@ func getTlsClient() (*http.Client) {
 
 	client := &http.Client{
 		Transport: tr,
+		DisableKeepAlives: true,
 	}
 
 	return client
