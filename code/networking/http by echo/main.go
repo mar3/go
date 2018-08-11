@@ -5,7 +5,7 @@ import "github.com/labstack/echo"
 import "text/template"
 import "bytes"
 
-func default_handler(c echo.Context) error {
+func default_handler(ctx echo.Context) error {
 
 	t, _ := template.ParseFiles("templates/index.html")
 	content := make(map[string]string)
@@ -13,8 +13,8 @@ func default_handler(c echo.Context) error {
 	// content["you"] = "オバマ"
 	buffer := new(bytes.Buffer)
 	t.Execute(buffer, content)
-	return c.String(http.StatusOK, string(buffer.Bytes()))
-	// return c.String(http.StatusOK, "Hello, World!")
+	return ctx.String(http.StatusOK, string(buffer.Bytes()))
+	// return ctx.String(http.StatusOK, "Hello, World!")
 }
 
 func main() {
