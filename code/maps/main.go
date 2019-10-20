@@ -10,7 +10,10 @@ func キーの有無を調べる() {
 	m["1"] = "One"
 
 	fmt.Println(m["1"])
+
+	// キーの有無を調べる
 	_, test := m["2"]
+
 	fmt.Println(test)
 }
 
