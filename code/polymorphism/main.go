@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 // バッチ処理基底クラス
-type AbstractBatch interface {
+type IBatch interface {
 	Invoke()
 }
 
@@ -19,7 +19,7 @@ func (this *Batch1) Invoke() {
 type Configuration struct {
 }
 
-func (this *Configuration) LoadBatchInstance(id string) AbstractBatch {
+func (this *Configuration) LoadBatchInstance(id string) IBatch {
 	switch id {
 	case "Batch1":
 		batch := Batch1{}
@@ -32,7 +32,7 @@ func (this *Configuration) LoadBatchInstance(id string) AbstractBatch {
 type TaskManager struct {
 }
 
-func (this *TaskManager) Execute(batch AbstractBatch) {
+func (this *TaskManager) Execute(batch IBatch) {
 
 	// バッチ処理オブジェクトを初期化します。
 	if batch == nil {
