@@ -12,7 +12,8 @@ func CopyFile(src string, dest string) error {
 
 	srcStat, _ := os.Stat(src)
 	if srcStat == nil {
-		panic("src not found!")
+		fmt.Print("[ERROR] src not found!")
+		return nil
 	}
 
 	destStat, err := os.Stat(dest)
@@ -31,7 +32,7 @@ func CopyFile(src string, dest string) error {
 			fmt.Printf("[TRACE] Creating a new directory ... [%s]\n", newPathName)
 			os.Mkdir(newPathName, 0777)
 		} else {
-			// エラー
+			// ファイルを作成します。
 			newPathName := path.Join(dest, srcStat.Name())
 			fmt.Printf("[TRACE] Creating a new file ... [%s]\n", newPathName)
 			file, err := os.Create(newPathName)
