@@ -1,7 +1,10 @@
 package main
 
-import "copy/application"
-import "os"
+import (
+	"copy/application"
+	"fmt"
+	"os"
+)
 
 func getArg(position int) string {
 
@@ -11,14 +14,23 @@ func getArg(position int) string {
 	return os.Args[position]
 }
 
+func usage() {
+
+	fmt.Println("USAGE:")
+	fmt.Println("    copy src dest")
+	fmt.Println()
+}
+
 func main() {
 
 	left := getArg(1)
 	right := getArg(2)
 	if left == "" {
+		usage()
 		return
 	}
 	if right == "" {
+		usage()
 		return
 	}
 	app := application.Application{}
