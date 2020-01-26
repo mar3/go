@@ -57,31 +57,13 @@ func CopyFile(src string, dest string) error {
 		// ディレクトリが存在する場合
 		if destStat.IsDir() {
 			// ディレクトリを作成します。
-			newPathName := path.Join(dest, destStat.Name())
+			newPathName := path.Join(dest, srcStat.Name())
+			fmt.Printf("[TRACE] Creating a new directory ... [%s]\n", newPathName)
 			os.Mkdir(newPathName, 0777)
 		} else {
 			// エラー
 		}
 	}
-	// 元
-	in, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer in.Close()
-
-	// 先
-	out, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, in)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
