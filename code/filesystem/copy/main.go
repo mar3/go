@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// コマンドライン引数の取り出し
 func getArg(position int) string {
 
 	if len(os.Args) <= position {
@@ -14,6 +15,7 @@ func getArg(position int) string {
 	return os.Args[position]
 }
 
+// 使用方法を表示します。
 func usage() {
 
 	fmt.Println("USAGE:")
@@ -21,8 +23,10 @@ func usage() {
 	fmt.Println()
 }
 
+// エントリーポイントの定義です。
 func main() {
 
+	// コマンドライン引数を二つ取ります。
 	left := getArg(1)
 	right := getArg(2)
 	if left == "" {
@@ -33,6 +37,8 @@ func main() {
 		usage()
 		return
 	}
+
+	// アプリケーションを実行します。
 	app := application.Application{}
 	app.Copy(left, right)
 }
