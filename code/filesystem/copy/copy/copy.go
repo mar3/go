@@ -1,13 +1,14 @@
 package copy
 
 import (
+	"copy/util"
 	"fmt"
 	"io"
 	"os"
 	"path"
-	"time"
 )
 
+// ファイルまたはディレクトリを複製します。
 func CopyFile(src string, dest string) error {
 
 	srcStat, _ := os.Stat(src)
@@ -67,16 +68,11 @@ func CopyFile(src string, dest string) error {
 	return nil
 }
 
-func getTimestamp() string {
-
-	now := time.Now()
-	return now.String()[0:23]
-}
-
+// 一時ディレクトリを初期化します。
 func initializeTempDir() string {
 
 	dirpath := os.TempDir()
-	timestamp := getTimestamp()
+	timestamp := util.GetTimestamp()
 	dir := path.Join(dirpath, "tmp-"+timestamp)
 	fmt.Printf("[TARCE] 作業ディレクトリ ... [%v]\n", dir)
 	return dir
