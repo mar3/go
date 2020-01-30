@@ -23,30 +23,37 @@ func main() {
 
 	// db.QueryRow("SELECT CURRENT_TIMESTAMP FROM DUAL WHERE 1 = ?", 1)
 
-	rows, err := db.Query("SELECT CURRENT_TIMESTAMP FROM DUAL WHERE 1 = ?", 1)
-	if err != nil {
-		fmt.Println(err)
-		return		
-	}
-	for rows.Next() {
-		var value interface{}
-		if err = rows.Scan(&value); err != nil {
+	//
+	// TEST: 1
+	//
+	if true {
+		rows, err := db.Query("SELECT CURRENT_TIMESTAMP FROM DUAL WHERE 1 = ?", 1)
+		if err != nil {
 			fmt.Println(err)
-		} else {
-			// How can I Scan() TIMESTAMP ??
-			fmt.Println(reflect.TypeOf(value))
+			return
+		}
+		for rows.Next() {
+			var value interface{}
+			if err = rows.Scan(&value); err != nil {
+				fmt.Println(err)
+			} else {
+				// How can I Scan() TIMESTAMP ??
+				fmt.Println(reflect.TypeOf(value))
+			}
 		}
 	}
 
-	// statement, err := db.Prepare(
-	// 	"SELECT CURRENT_TIMESTAMP WHERE 1 = ?")
- //    if err != nil {
- //        panic(err.Error()) // proper error handling instead of panic in your app
- //    }
- //    defer statement.Close()
-    // statement.QueryRow(1)
+	//
+	// TEST: 2
+	//
+	if false {
+		statement, err := db.Prepare("SELECT CURRENT_TIMESTAMP WHERE 1 = ?")
+		if err != nil {
+			panic(err.Error()) // proper error handling instead of panic in your app
+		}
+		defer statement.Close()
+		statement.QueryRow(1)
+	}
 
 	fmt.Println("Ok.")
 }
-
-
