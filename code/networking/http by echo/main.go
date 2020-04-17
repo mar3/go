@@ -21,8 +21,29 @@ func default_handler(c echo.Context) error {
 }
 
 func hello1_handler(c echo.Context) error {
-
 	return c.String(http.StatusOK, "Hello, World!")
+}
+
+func form1_get_handler(c echo.Context) error {
+	t, _ := template.ParseFiles("templates/form1.html")
+	content := make(map[string]string)
+	content["text1"] = "オバマ1"
+	content["text2"] = "オバマ2"
+	content["text3"] = "オバマ3"
+	buffer := new(bytes.Buffer)
+	t.Execute(buffer, content)
+	return c.HTML(http.StatusOK, string(buffer.Bytes()))
+}
+
+func form1_post_handler(c echo.Context) error {
+	t, _ := template.ParseFiles("templates/form1_result.html")
+	content := make(map[string]string)
+	content["text1"] = "オバマ1"
+	content["text2"] = "オバマ2"
+	content["text3"] = "オバマ3"
+	buffer := new(bytes.Buffer)
+	t.Execute(buffer, content)
+	return c.HTML(http.StatusOK, string(buffer.Bytes()))
 }
 
 func main() {
@@ -40,6 +61,9 @@ func main() {
 	// routing
 	e.GET("/", default_handler)
 	e.GET("/hello1", hello1_handler)
+
+	e.GET("/form1", form1_get_handler)
+	e.POST("/form1", form1_post_handler)
 
 	// listenning
 	e.Logger.Fatal(e.Start(":8081"))
