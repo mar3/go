@@ -9,6 +9,31 @@ import (
 	"time"
 )
 
+type Stopwatch struct {
+	time time.Time
+}
+
+func Stopwatch_New() *Stopwatch {
+	watch := Stopwatch{time: time.Now()}
+	return &watch
+}
+
+func (self *Stopwatch) Reset() {
+	self.time = time.Now()
+}
+
+func (self *Stopwatch) ToString() string {
+	currentDuration := time.Since(self.time)
+	millisec := currentDuration.Milliseconds()
+	hours := millisec / 1000 / 60 / 60
+	minutes := millisec / 1000 / 60
+	secs := millisec / 1000
+	return fmt.Sprintf("%02d:%02d:%02d.%03d", hours,
+		minutes,
+		secs,
+		millisec%1000)
+}
+
 func copyFile(left string, right string) error {
 	fmt.Println(right)
 	leftFile, error := os.Open(left)
@@ -88,6 +113,7 @@ func main() {
 		usage()
 		return
 	}
+	watch := Stopwatch_New()
 	xcopy(os.Args[1], os.Args[2])
-	fmt.Println("Ok.")
+	fmt.Println("Ok. (elaped: " + watch.ToString() + ")")
 }
