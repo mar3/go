@@ -1,10 +1,20 @@
 package main
 
-import "fmt"
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-func main() {
+// 現在のタイムスタンプを返します。
+func getCurrentTimestamp() string {
 
-	fmt.Printf("now: %v\n", time.Now())
+	now := time.Now()
+	return now.String()[0:23]
 }
 
+// エントリーポイント
+func main() {
+
+	fmt.Printf("current timestamp: [%s]\n", getCurrentTimestamp())
+	fmt.Printf("now: [%v]\n", time.Now())
+}
