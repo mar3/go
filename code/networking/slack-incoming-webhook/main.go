@@ -64,26 +64,6 @@ func getTlsClient() *http.Client {
 	return client
 }
 
-func get(url string) string {
-
-	client := getTlsClient()
-	req, _ := http.NewRequest("GET", url, nil)
-	req.Header.Add("Accept-Charset", "utf-8")
-	req.Header.Add("User-Agent", "Mozilla/5.0")
-	response, err := client.Do(req)
-	if err != nil {
-		fmt.Printf("[ERROR] リクエストに失敗しています。理由: [%s]", err.Error())
-		return ""
-	}
-	defer response.Body.Close()
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Printf("[ERROR] コンテンツの読み込みに失敗しています。理由: [%s]", err.Error())
-		return ""
-	}
-	return string(body)
-}
-
 type Application struct {
 	conf *Configuration
 }
@@ -99,17 +79,21 @@ func (self *Application) Configure() *Configuration {
 	return self.conf
 }
 
-func (self *Application) PostSlackWebhook(content map[string]string) string {
+// webhook を利用してメッセージを投稿します。
+// コンソールで設定されたチャネルに投稿されます。
+func (self *Application) PostMessageByWebhook(text string) {
 
 	conf := self.Configure()
 	if conf == nil {
-		return ""
+		return
 	}
 
+	content := make(map[string]string)
+	content["text"] = text
 	contentText, err := json.Marshal(content)
 	if err != nil {
 		fmt.Printf("[ERROR] コンテンツの加工に失敗しています。理由: [%s]", err.Error())
-		return ""
+		return
 	}
 
 	client := getTlsClient()
@@ -119,30 +103,38 @@ func (self *Application) PostSlackWebhook(content map[string]string) string {
 	response, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("[ERROR] %s", err)
-		return ""
+		return
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		fmt.Printf("[ERROR] コンテンツの読み込みに失敗しています。理由: [%s]", err.Error())
-		return ""
+		return
 	}
 
-	return string(body)
+	fmt.Println(string(body))
 }
 
-func (self *Application) UploadFile(channel string, path string) string {
+// ファイルの名前部分を返します。
+func getFileName(path string) string {
+	file, error := os.Stat(path)
+	if error != nil {
+		return ""
+	}
+	return file.Name()
+}
 
-	//curl \
-	//  -F file=@cycling.jpeg \
-	//  -F "initial_comment=Hello, Leadville" \
-	//  -F channels=C0R7MFNJD \
-	//  -H "Authorization: Bearer xoxp-123456789" \
-	//  https://slack.com/api/files.upload
+func (self *Application) TestUploadFile(channel string, path string) {
 
 	conf := self.Configure()
 	if conf == nil {
-		return ""
+		return
+	}
+
+	name := getFileName(path)
+	if name == "" {
+		fmt.Println("[ERROR] ファイル名が不明です。")
+		return
 	}
 
 	if false {
@@ -150,7 +142,7 @@ func (self *Application) UploadFile(channel string, path string) string {
 		contentText, err := json.Marshal(content)
 		if err != nil {
 			fmt.Printf("[ERROR] コンテンツの加工に失敗しています。理由: [%s]", err.Error())
-			return ""
+			return
 		}
 		fmt.Println(contentText)
 	}
@@ -158,12 +150,8 @@ func (self *Application) UploadFile(channel string, path string) string {
 	// Slack Bot に与えられたアクセストークン
 	accessTokenHeader := fmt.Sprintf("Bearer %s", conf.AccessToken)
 	fmt.Printf("[TRACE] accessToken: [%s]\n", accessTokenHeader)
-
-	// values := url.Values{}
-
 	// 送信用バッファ
 	var buf bytes.Buffer
-
 	// マルチパート書き込み用オブジェクトを作成
 	multipartWriter := multipart.NewWriter(&buf)
 
@@ -172,28 +160,20 @@ func (self *Application) UploadFile(channel string, path string) string {
 		// ファイルをオープン
 		f, err := os.Open(path)
 		if err != nil {
-			return ""
+			return
 		}
 		defer f.Close()
-		streamWriter, error := multipartWriter.CreateFormFile("file", "main.go")
+		streamWriter, error := multipartWriter.CreateFormFile("file", name)
 		if error != nil {
-			return ""
+			return
 		}
 		if _, error = io.Copy(streamWriter, f); error != nil {
-			return ""
+			return
 		}
 	}
 
-	// フィールド:
-	{
-		multipartWriter.WriteField("initial_comment", "さあうけとるがよい")
-	}
-
-	// フィールド: channels
-	if true {
-		multipartWriter.WriteField("channels", "#notifications")
-	}
-
+	multipartWriter.WriteField("initial_comment", "さあうけとるがよい")
+	multipartWriter.WriteField("channels", "#notifications")
 	multipartWriter.Close()
 
 	url := "https://slack.com/api/files.upload"
@@ -208,35 +188,26 @@ func (self *Application) UploadFile(channel string, path string) string {
 	response, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("[ERROR] リクエストを完了できません。理由: [%s]\n", err)
-		return ""
+		return
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		fmt.Printf("[ERROR] コンテンツの読み込みに失敗しています。理由: [%s]\n", err.Error())
-		return ""
+		return
 	}
 
-	return string(body)
+	fmt.Println(string(body))
 }
 
 // アクセストークンを使用して GitHub のファイルを DELETE します。
 func (self *Application) Run() {
 
 	if false {
-		content := make(map[string]string)
-		content["text"] = "はじめまして ようこそ おじゃまいたします さようなら ごきげんよう"
-		response := self.PostSlackWebhook(content)
-		if response == "" {
-			return
-		}
-		fmt.Println(response)
+		self.PostMessageByWebhook("はじめまして ようこそ おじゃまいたします さようなら ごきげんよう")
 	}
-
 	if true {
-		// response := self.UploadFile("CNH0XTKJ7", "main.go")
-		response := self.UploadFile("notifications", "main.go")
-		fmt.Printf("[TRACE] RESPONSE: [%s]\n", response)
+		self.TestUploadFile("notifications", "cb8ba27acf90f647d362a851a311d801_1428748299.jpg")
 	}
 }
 
