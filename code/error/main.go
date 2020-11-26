@@ -9,10 +9,6 @@ type Error struct {
 	description string
 }
 
-func NewError(description string) Error {
-	return Error{description}
-}
-
 func (self Error) Error() string {
 
 	return self.description
@@ -22,7 +18,7 @@ func execute() error {
 
 	xxxxx := os.Getenv("xxxxx")
 	if xxxxx == "" {
-		return NewError("環境変数が未定義です。")
+		return Error{"環境変数が未定義です。"}
 	}
 	return nil
 }
