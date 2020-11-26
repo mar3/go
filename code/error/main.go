@@ -5,11 +5,15 @@ import (
 	"os"
 )
 
-type MyError struct {
+type Error struct {
 	description string
 }
 
-func (self MyError) Error() string {
+func NewError(description string) Error {
+	return Error{description}
+}
+
+func (self Error) Error() string {
 
 	return self.description
 }
@@ -18,7 +22,7 @@ func execute() error {
 
 	xxxxx := os.Getenv("xxxxx")
 	if xxxxx == "" {
-		return MyError{description: "環境変数が未定義です。"}
+		return NewError("環境変数が未定義です。")
 	}
 	return nil
 }
